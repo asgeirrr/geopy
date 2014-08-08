@@ -65,6 +65,7 @@ class Bing(Geocoder):
             exactly_one=True,
             user_location=None,
             timeout=None,
+            params=None
             ):  # pylint: disable=W0221
         """
         Geocode an address.
@@ -85,13 +86,19 @@ class Bing(Geocoder):
             to respond before raising a :class:`geopy.exc.GeocoderTimedOut`
             exception. Set this only if you wish to override, on this call
             only, the value set during the geocoder's initialization.
-
+	:param dict params: pass additional parameters to the request
+	    e.g. include the neighbourhood in the response
             .. versionadded:: 0.97
         """
-        params = {
+
+        if not params:
+            params = {}
+
+        params.update({
             'query': self.format_string % query,
-            'key': self.api_key
-        }
+            'key': self.api_key,
+        })
+
         if user_location:
             params['userLocation'] = ",".join(
                 (str(user_location.latitude), str(user_location.longitude))
